@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role-based access",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name" },
+        "email": { "type": "string", "format": "email", "description": "User email" },
+        "role": { "type": "string", "enum": ["admin", "user"], "description": "User role: admin or user" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" }
+      },
+      "required": ["name", "email", "role"]
+    },
+    "Area": {
+      "title": "Area",
+      "description": "A business area or department",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the area (e.g. Production)" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name"]
+    },
+    "Problem": {
+      "title": "Problem",
+      "description": "A registered problem or incident",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Short title" },
+        "description": { "type": "string", "description": "Detailed description" },
+        "areaId": { "type": "string", "description": "Reference to the area" },
+        "priority": { "type": "string", "enum": ["high", "medium", "low"] },
+        "status": { "type": "string", "enum": ["open", "in_progress", "closed"] },
+        "userId": { "type": "string", "description": "User who registered it" },
+        "reporterName": { "type": "string", "description": "Name of the user who reported it" },
+        "occurrenceDate": { "type": "string", "format": "date" },
+        "recurrenceCount": { "type": "number", "description": "How many times this has happened" },
+        "resolutionText": { "type": "string", "description": "How the problem was resolved" },
+        "resolvedBy": { "type": "string", "description": "User who resolved it" },
+        "resolvedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "areaId", "priority", "status", "userId", "occurrenceDate"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of users"
+    },
+    "/areas/{areaId}": {
+      "schema": "Area",
+      "description": "Collection of business areas"
+    },
+    "/problems/{problemId}": {
+      "schema": "Problem",
+      "description": "Collection of registered problems"
+    },
+    "/problems/{problemId}/occurrences/{occurrenceId}": {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "date": { "type": "string", "format": "date" },
+          "note": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "description": "History of recurrences for a specific problem"
+    }
+  }
+}

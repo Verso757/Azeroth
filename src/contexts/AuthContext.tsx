@@ -27,11 +27,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setProfile({ id: user.uid, ...userDoc.data() } as UserProfile);
         } else {
           // New user registration
-          const isInitialAdmin = user.email === 'yaquimdm@gmail.com';
+          const isInitialAdmin = user.email === 'jrafael.garcia757@gmail.com';
           const newProfile: Omit<UserProfile, 'id'> = {
             name: user.displayName || 'Anonymous',
             email: user.email || '',
-            role: isInitialAdmin ? 'admin' : 'user',
+            role: isInitialAdmin ? 'admin' : 'operator',
             createdAt: serverTimestamp(),
           };
           await setDoc(doc(db, 'users', user.uid), newProfile);

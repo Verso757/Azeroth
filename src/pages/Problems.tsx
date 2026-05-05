@@ -44,16 +44,16 @@ export default function Problems() {
     });
 
     // Sync Problems
-    let qProblems = query(collection(db, 'problems'), orderBy('createdAt', 'desc'));
-    
-    // If not admin, only show own problems
-    if (!isAdmin && user) {
-      qProblems = query(collection(db, 'problems'), where('userId', '==', user.uid), orderBy('createdAt', 'desc'));
-    }
+    const qProblems = query(collection(db, 'problems'), orderBy('createdAt', 'desc'));
 
     const unsubProblems = onSnapshot(qProblems, 
       (snap) => {
-        setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Problem)));
+        let docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Problem));
+        if (!isAdmin && user && profile) {
+          const assignedAreas = profile.areaIds || [];
+          docs = docs.filter(p => p.userId === user.uid || assignedAreas.includes(p.areaId));
+        }
+        setProblems(docs);
         setLoading(false);
       },
       (error) => {

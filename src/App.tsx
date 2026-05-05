@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import Problems from './pages/Problems';
 import Reports from './pages/Reports';
 import Areas from './pages/Areas';
+import Users from './pages/Users';
 
 export default function App() {
   return (
@@ -28,6 +29,14 @@ export default function App() {
               element={
                 <ProtectedRoute adminOnly>
                   <Areas />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/users" 
+              element={
+                <ProtectedRoute adminOnly>
+                  <Users />
                 </ProtectedRoute>
               } 
             />

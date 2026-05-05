@@ -29,7 +29,10 @@ import {
 import { motion } from 'motion/react';
 import { cn, formatDate } from '../lib/utils';
 
+import { useAuth } from '../contexts/AuthContext';
+
 export default function Dashboard() {
+  const { profile, isAdmin, user } = useAuth();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +44,12 @@ export default function Dashboard() {
 
     const qProblems = query(collection(db, 'problems'), orderBy('createdAt', 'desc'));
     const unsubProblems = onSnapshot(qProblems, (snap) => {
-      setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Problem)));
+      let docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Problem));
+      if (!isAdmin && user && profile) {
+        const assignedAreas = profile.areaIds || [];
+        docs = docs.filter(p => p.userId === user.uid || assignedAreas.includes(p.areaId));
+      }
+      setProblems(docs);
       setLoading(false);
     });
 

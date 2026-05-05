@@ -1,10 +1,11 @@
-export type UserRole = 'admin' | 'user';
+export type UserRole = 'admin' | 'manager' | 'operator';
 
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
   role: UserRole;
+  areaIds?: string[];
   createdAt?: any;
 }
 

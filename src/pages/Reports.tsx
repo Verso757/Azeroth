@@ -18,7 +18,10 @@ import { motion } from 'motion/react';
 import * as XLSX from 'xlsx';
 import { formatDate, cn } from '../lib/utils';
 
+import { useAuth } from '../contexts/AuthContext';
+
 export default function Reports() {
+  const { profile, isAdmin, user } = useAuth();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [areas, setAreas] = useState<Area[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +39,12 @@ export default function Reports() {
 
     const qProblems = query(collection(db, 'problems'), orderBy('createdAt', 'desc'));
     const unsubProblems = onSnapshot(qProblems, (snap) => {
-      setProblems(snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Problem)));
+      let docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Problem));
+      if (!isAdmin && user && profile) {
+        const assignedAreas = profile.areaIds || [];
+        docs = docs.filter(p => p.userId === user.uid || assignedAreas.includes(p.areaId));
+      }
+      setProblems(docs);
       setLoading(false);
     });
 

@@ -8,7 +8,8 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
-  X
+  X,
+  Users
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { logout } from '../../lib/firebase';
@@ -26,6 +27,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
 
   if (isAdmin) {
     links.push({ to: '/areas', icon: Settings, label: 'Áreas' });
+    links.push({ to: '/users', icon: Users, label: 'Usuarios' });
   }
 
   return (
